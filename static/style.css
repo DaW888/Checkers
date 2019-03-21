@@ -1,0 +1,68 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#welcomeScreen{
+    width: 800px;
+    height: 800px;
+    background-color: #343b575a;
+    display: grid;
+    grid-template-columns: 1fr 70% 1fr;
+    grid-gap: 2%;
+    grid-template-rows:1fr 2fr 2fr 1fr 1fr;
+    grid-template-areas: 
+        "txLogowanie txLogowanie txLogowanie"
+        ". inpLogin ."
+        ". btLoguj ."
+        ". btReset ."
+        ". . .";
+}
+#welcomeScreen > *{
+    text-align: center;
+    display: block;
+}
+#welcomeScreen > p{
+    grid-area: txLogowanie;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 40px;
+}
+#inpLogin{
+    grid-area: inpLogin;
+    /*! Stworzyć taki input że podczas focusa podświetla się tylko dolna krawędź */
+
+    height: 70%;
+    background-color: transparent;
+    color: rgb(15, 15, 15);
+    font-size: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    border: 2px solid red;
+    border-radius: 10%;
+}
+#btLoguj{
+    grid-area: btLoguj;
+
+    height: 70%;
+    font-size: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    border: 2px solid red;
+    border-radius: 10%;
+    color: rgb(255, 255, 255);
+    background-color: transparent;
+}
+#btReset{
+    grid-area: btReset;
+
+    height: 70%;
+    font-size: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    border: 2px solid red;
+    border-radius: 10%;
+    color: rgb(255, 255, 255);
+    background-color: transparent;
+}
