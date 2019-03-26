@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 console.log('wczytano plik Net.js');
 
 class Net {
@@ -5,8 +6,9 @@ class Net {
         console.log('konstruktor klasy Net');
     }
 
+    // wyslanie nazwy uzytkownika na serwer
+    // odbior: canLogin, message, if(canLogin){to też users[]}
     sendUserData(userData) {
-        // eslint-disable-next-line no-undef
         $.ajax({
             url: '../server.js',
             data: { action: 'addUser', user: userData },
@@ -14,13 +16,27 @@ class Net {
             success: function(data) {
                 const obj = JSON.parse(data);
                 console.log(obj);
+                ui.userResponose(obj);
             },
             error: function(xhr, status, error) {
-                console.log(xhr);
+                console.log(xhr, status, error);
             },
-        }).then(res => {
-            // ui.createDom(JSON.parse(res));
-            console.error('WYRZUĆ THENA I ZROB W SUCCESS');
+        });
+    }
+
+    // wyczysczenie tablicy uzytkownikow
+    clearUsersArray(){ // button - resetuj
+        $.ajax({
+            url: '../server.js',
+            data: { action: 'clearArray'},
+            type: 'POST',
+            success: function(data) {
+                const obj = JSON.parse(data);
+                console.log(obj);
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr, status, error);
+            },
         });
     }
 }

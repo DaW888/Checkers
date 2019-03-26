@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const qs = require('querystring');
 
+var usersTab = [];
 const server = http.createServer(function(req, res) {
     console.log('adres url: ' + req.url);
     console.log(req.method);
@@ -89,17 +90,31 @@ function servResponse(req, res) {
         allData += data;
     });
 
-    req.on('end', function(data) {
-        const finishObj = qs.parse(allData);
+    req.on('end', function() { //(data) w function ale raczej nie trzeba
+        const finish = qs.parse(allData);
 
-        switch (finishObj.akcja) {
-        //dodanie nowego usera
+        var result = null;
+        switch (finish.action) {
         case 'addUser':
-            dodajUseraDoTablicy();
+            // sprawdza czy taki user wystepuje juz w tabeli
+            var isSameUser = usersTab.find(user => user === finish.user);
+            if(!isSameUser){
+                usersTab.push(finish.user); // w przyszłości socket.io i IP goscia
+                if(usersTab.length > 2){
+                    result = {message: 'Gra już za dużo użytkowników', canLogin: false};
+                    usersTab.pop();
+                }
+                else
+                    result = {message: 'Zalogowano', canLogin: true, users: usersTab};
+
+            } else{
+                result = {message: 'Taki użytkownik już istnieje', canLogin: false};
+
+            }
+            res.end(JSON.stringify(result, null, 2));
             break;
-            //inna akcja
-        case 'INNA_AKCJA':
-            innaAkcjaNpUsunUserow();
+        case 'clearArray':
+            usersTab = [];
             break;
         }
     });
