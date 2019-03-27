@@ -26,34 +26,52 @@ class Ui {
         $('#btReset').click(()=>{
             net.clearUsersArray();
         });
-        
+
     }
 
     // odebranie danych z servera
     // message, canLogin, if(canLogin){users}
     userResponose(data){
+        this.resedData = data;
         if(!data.canLogin){
             $('p')[0].innerHTML = data.message + '!!!';
         } else{
             $('p')[0].innerHTML = data.message;
             $('#inpLogin').css({display: 'none'});
+            $('#btLoguj').html('Oczekiwanie na drugiego gracza...');
             $('#btLoguj').off('click');
             $('#btReset').off('click');
-            setTimeout(()=>{
-                $('#welcomeScreen').css({display: 'none'});
-                $('<div>', {html: 'Zalogowano jako '+this.myNick}).addClass('status').appendTo($('body')[0]);
-
-                // jesli loguje sie drugi user to zmienia perspektywe
-                var ktoryUser = data.users.indexOf(this.myNick);
-                var pionki = game.checkersGen();
-                game.scene.add(pionki);
-                
-                
-                if(ktoryUser == 1){
-                    game.changeSide();
-                    $('.status').css({backgroundColor: 'rgba(214, 34, 34, 0.324)'});
-                }
-            }, 1000);
+            this.idInter = setInterval(()=>{
+                net.usersArray()
+            },1000)
         }
+    }
+    afterSecondUserLogin(users){ // moze przerobic na funkcje asynchronizna i wrzucic do
+        //userResponose
+        console.log(users);
+        var czekaj = true;
+        if(users.length == 2){
+            czekaj = false
+            clearInterval(this.idInter);
+        }
+        console.log(users)
+        if(!czekaj){
+            console.log('jest juz drugi');
+            $('#welcomeScreen').css({display: 'none'});
+            $('<div>', {html: 'Zalogowano jako '+this.myNick}).addClass('status').appendTo($('body')[0]);
+
+            // jesli loguje sie drugi user to zmienia perspektywe
+            var ktoryUser = this.resedData.users.indexOf(this.myNick);
+            var pionki = game.checkersGen();
+            game.scene.add(pionki);
+
+
+            if(ktoryUser == 1){
+                game.changeSide();
+                $('.status').css({backgroundColor: 'rgba(214, 34, 34, 0.324)'});
+            }
+
+        }
+
     }
 }

@@ -122,17 +122,15 @@ class Game {
     checkersGen() {
         var container = new THREE.Object3D();
 
-        var redChecker = new THREE.MeshBasicMaterial({ color: 0x9f003d });
-        var blueChecker = new THREE.MeshBasicMaterial({ color: 0x9ef5ff });
-        var geometry = new THREE.CylinderGeometry(30, 30, 10, 32);
-
         var cylinder = null;
         this.checkersTab.forEach((el1, i) => {
             el1.forEach((el2, j) => {
                 console.log(el2, i, j);
-                if (el2 == 2) cylinder = new THREE.Mesh(geometry, redChecker);
-                else if (el2 == 1) cylinder = new THREE.Mesh(geometry, blueChecker);
+                var oneChecker = new Checker();
+                if (el2 == 2) oneChecker.checker = 0x9f003d; // przeciwnik
+                else if (el2 == 1) oneChecker.checker = 0x9ef5ff; // ja
                 if (el2 > 0) {
+                    cylinder = oneChecker.checker;
                     cylinder.position.set(
                         (-el1.length / 2 + i) * this.sizeOfBlock + this.sizeOfBlock / 2,
                         20,

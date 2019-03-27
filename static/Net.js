@@ -39,4 +39,21 @@ class Net {
             },
         });
     }
+
+    usersArray(){
+        $.ajax({
+            url: '../server.js',
+            data: { action: 'getUsersArray'},
+            type: 'POST',
+            success: function(data) {
+                const obj = JSON.parse(data);
+                console.log(obj);
+                ui.afterSecondUserLogin(obj);
+                return obj;
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr, status, error);
+            },
+        });
+    }
 }

@@ -109,13 +109,17 @@ function servResponse(req, res) {
 
             } else{
                 result = {message: 'Taki użytkownik już istnieje', canLogin: false};
-
             }
             res.end(JSON.stringify(result, null, 2));
             break;
+
+
         case 'clearArray':
             usersTab = [];
             break;
+
+        case 'getUsersArray':
+            res.end(JSON.stringify(usersTab, null, 2));
         }
     });
 }
