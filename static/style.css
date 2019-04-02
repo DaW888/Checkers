@@ -59,7 +59,7 @@ body{
     cursor: pointer;
     grid-area: btLoguj;
     height: 70%;
-    font-size: 5vw;
+    font-size: 4vw;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: bold;
     border: 2px solid rgb(255, 246, 0);
@@ -98,8 +98,16 @@ body{
     border: 0 solid;
     color: whitesmoke;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 2.4vw;
-    padding: 1vh;
+    font-size: 1.8vw;
+    padding: 0.2vh;
     text-align: center;
     background-color: rgba(92, 246, 236, 0.427);
+}
+
+.status > p{
+    margin: 0;
+}
+
+.gameInfo{
+    color:rgb(238, 255, 0);
 }
