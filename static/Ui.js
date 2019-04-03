@@ -40,16 +40,16 @@ class Ui {
             $('#btLoguj').html('Oczekiwanie na drugiego gracza...');
             $('#btLoguj').off('click');
             $('#btReset').off('click');
-            this.idInter = setInterval(() => { //!komentujemy
+            // this.idInter = setInterval(() => { //!komentujemy
                 net.usersArray();
-            }, 500); //!komentujemy
+            // }, 500); //!komentujemy
         }
     }
     afterSecondUserLogin(users) {
         // moze przerobic na funkcje asynchronizna i wrzucic do
         //userResponose
         console.log(users);
-        var czekaj = true; //! to powinno być równe TRUE, ale do testów używamy FALSE
+        var czekaj = false; //! to powinno być równe TRUE, ale do testów używamy FALSE
         if (users.length == 2) {
             czekaj = false;
             clearInterval(this.idInter);
@@ -67,7 +67,7 @@ class Ui {
             $('<p>', { html: 'Zalogowano jako ' + this.myNick })
                 .addClass('nickInfo') // informacja na tematu nicku zawodnika
                 .appendTo($(info));
-            
+
             $('<p>')
                 .addClass('gameInfo') // informacje z gry
                 .appendTo($(info));

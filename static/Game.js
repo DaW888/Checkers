@@ -110,6 +110,9 @@ class Game {
                     0,
                     (-4 + i) * this.sizeOfBlock + this.sizeOfBlock / 2
                 );
+                cube.cords = {x: i, y: j};
+                console.log(cube.cords);
+                console.log(cube.name);
                 container.add(cube);
             });
         });
@@ -137,6 +140,8 @@ class Game {
                         20,
                         (-el1.length / 2 + j) * this.sizeOfBlock + this.sizeOfBlock / 2
                     );
+                    cylinder.cords = {x: j, y: i};
+                    console.log(cylinder.cords);
                     container.add(cylinder);
                 }
             });
@@ -156,7 +161,7 @@ class Game {
         var mouseVector = new THREE.Vector2();
         var raycaster = new THREE.Raycaster();
 
-        var positionOfField = null; // x,y,z - klikanego pola (tylko ciemnego)
+        var thisFiled = null; // x,y,z - klikanego pola (tylko ciemnego)
         var thisChecker = null; // wybrany pionek
         var beforeCheckerColor = null; // kolor wybranego elementu (by można było do niego wrócić)
 
@@ -176,10 +181,14 @@ class Game {
                     if (currentField.name == 'dark') {
                         $('.gameInfo').empty();
                         console.log(currentField.position);
-                        positionOfField = currentField.position; // ustalenie pozycji pola
-                        thisChecker.position.x = positionOfField.x; // ustawienie pozycji pionka na klikane pole (X, niżej Z)
-                        thisChecker.position.z = positionOfField.z;
+                        thisFiled = currentField; // ustalenie pozycji pola
+                        thisChecker.position.x = thisFiled.position.x; // ustawienie pozycji pionka na klikane pole (X, niżej Z)
+                        thisChecker.position.z = thisFiled.position.z;
                         thisChecker.material.color = beforeCheckerColor; // ustawienie domyślnego koloru pionka
+
+                        net.updateCheckersArray({field: {x: 7 - thisFiled.cords.x, y: thisFiled.cords.y},
+                            checker: {x: 7 - thisChecker.cords.x, y: thisChecker.cords.y}});
+
                         clickElement = 1; // zmiana kolejki na pionka
                     } else $('.gameInfo').html('Możesz poruszać się tylko po ciemnych polach !');
                     // currentField.material.color = {r: 0, g: 0, b: 1};

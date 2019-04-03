@@ -56,4 +56,22 @@ class Net {
             },
         });
     }
+
+    updateCheckersArray(position){
+        $.ajax({
+            url: '../server.js',
+            data: { action: 'updateCheckersArray', setting: JSON.stringify(position)},
+            type: 'POST',
+            success: function(data) {
+                // const obj = JSON.parse(data);
+                // console.log(obj);
+                // ui.afterSecondUserLogin(obj);
+                // funkcja generująca pionki / ewentualnie jednego
+                // return obj;
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr, status, error);
+            },
+        });
+    }
 }

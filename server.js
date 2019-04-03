@@ -3,6 +3,30 @@ const fs = require('fs');
 const qs = require('querystring');
 
 var usersTab = [];
+
+chessboardTab = [
+    // light - 0, dark - 1;
+    [0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 1, 0],
+];
+
+// startowe rozmieszczenie pionkow
+checkersTab = [
+    [0, 2, 0, 2, 0, 2, 0, 2], // 2 - czerwone
+    [2, 0, 2, 0, 2, 0, 2, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 1, 0, 1, 0, 1], // 1 - białe
+    [1, 0, 1, 0, 1, 0, 1, 0],
+];
 const server = http.createServer(function(req, res) {
     console.log('adres url: ' + req.url);
     console.log(req.method);
@@ -120,6 +144,12 @@ function servResponse(req, res) {
 
         case 'getUsersArray':
             res.end(JSON.stringify(usersTab, null, 2));
+            break;
+        case 'updateCheckersArray':
+            var setting = JSON.parse(finish.setting);
+            console.log(setting);
+            res.end('');
+            break;
         }
     });
 }
