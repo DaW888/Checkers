@@ -18,5 +18,14 @@
         "no-case-declarations": "off",
         "comma-dangle": 0,
         "no-unexpected-multiline": "warn"
+    },
+    "globals": {
+        "window": true,
+        "document": true,
+        "$": true,
+        "THREE": true,
+        "net": true,
+        "ui": true,
+        "game":true
     }
 }

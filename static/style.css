@@ -111,3 +111,18 @@ body{
 .gameInfo{
     color:rgb(238, 255, 0);
 }
+
+.waitingOverlay{
+    position: absolute;
+    font-size: 70px;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    text-align: center;
+    background-color: #ffaaffca;
+}
+
+.waitDiv{
+    color: red;
+    font-weight: bold;
+}

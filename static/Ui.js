@@ -6,6 +6,7 @@ class Ui {
         console.log('konstruktor klasy Ui');
         this.welcomeScreen();
         this.myNick = null;
+        this.waiting = false; // czekanie na kolej drugiego usera 20s
     }
 
     welcomeScreen() {
@@ -40,16 +41,16 @@ class Ui {
             $('#btLoguj').html('Oczekiwanie na drugiego gracza...');
             $('#btLoguj').off('click');
             $('#btReset').off('click');
-            // this.idInter = setInterval(() => { //!komentujemy
+            this.idInter = setInterval(() => { //!komentujemy
                 net.usersArray();
-            // }, 500); //!komentujemy
+            }, 100); //!komentujemy
         }
     }
     afterSecondUserLogin(users) {
         // moze przerobic na funkcje asynchronizna i wrzucic do
         //userResponose
         console.log(users);
-        var czekaj = false; //! to powinno być równe TRUE, ale do testów używamy FALSE
+        var czekaj = true; //! to powinno być równe TRUE, ale do testów używamy FALSE
         if (users.length == 2) {
             czekaj = false;
             clearInterval(this.idInter);
@@ -80,7 +81,50 @@ class Ui {
             if (ktoryUser == 1) {
                 game.changeSide();
                 $('.status').css({ backgroundColor: 'rgba(214, 34, 34, 0.324)' });
+                // this.waiting = true; //! tutaj TRUE
+                this.waitForOponentMove(5);
+            } else {
+                this.timeInfo(5);
             }
+            
         }
+    }
+
+    waitForOponentMove(timer = 20){
+        // if(this.waiting){
+        game.yourTurn = false;
+        var waitingOverlay = $('<div>', {html: 'Czekamy'}).addClass('waitingOverlay').appendTo($('.status'));
+        waitingOverlay.css({ display: 'block' });
+        var inter = setInterval(() => {
+            console.log('chodzi>');
+            waitingOverlay.html(timer);
+            console.log(waitingOverlay.html());
+
+            if(timer <= 0){
+                clearInterval(inter);
+                timer = 20;
+                // this.waiting = false;
+                waitingOverlay.remove();
+                this.timeInfo(10);
+            }
+
+            timer--;
+
+        }, 1000);
+        // }
+    }
+    timeInfo(timer = 20){
+        game.yourTurn = true;
+        var waitDiv = $('<div>', {html: 'CZAS START'}).addClass('waitDiv').appendTo($('.status'));
+        var inter = setInterval(() => {
+            waitDiv.html(timer);
+
+            if(timer <= 0){
+                clearInterval(inter);
+                waitDiv.remove();
+                this.waitForOponentMove(10);
+            }
+            timer --;
+        }, 1000);
     }
 }

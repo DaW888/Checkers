@@ -148,7 +148,7 @@ function servResponse(req, res) {
         case 'updateCheckersArray':
             var setting = JSON.parse(finish.setting);
             console.log(setting);
-            res.end('');
+            res.end(JSON.stringify(setting, null, 2));
             break;
         }
     });

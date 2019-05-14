@@ -34,8 +34,10 @@ class Game {
         // wielkosc od ktorej zalezy rozmiar planszy
         this.sizeOfBlock = 70;
         this.userColor = 'blueChecker';
+        this.bYourTurn = true;
 
         this.generator3d();
+        // this.clickTest();
     }
 
     // funkcja startowa 3d, init
@@ -110,7 +112,7 @@ class Game {
                     0,
                     (-4 + i) * this.sizeOfBlock + this.sizeOfBlock / 2
                 );
-                cube.cords = {x: i, y: j};
+                cube.cords = { x: i, y: j };
                 console.log(cube.cords);
                 console.log(cube.name);
                 container.add(cube);
@@ -140,7 +142,7 @@ class Game {
                         20,
                         (-el1.length / 2 + j) * this.sizeOfBlock + this.sizeOfBlock / 2
                     );
-                    cylinder.cords = {x: j, y: i};
+                    cylinder.cords = { x: j, y: i };
                     console.log(cylinder.cords);
                     container.add(cylinder);
                 }
@@ -179,18 +181,33 @@ class Game {
                 if (intersects.length > 0) {
                     var currentField = intersects[0].object;
                     if (currentField.name == 'dark') {
-                        $('.gameInfo').empty();
-                        console.log(currentField.position);
-                        thisFiled = currentField; // ustalenie pozycji pola
-                        thisChecker.position.x = thisFiled.position.x; // ustawienie pozycji pionka na klikane pole (X, niżej Z)
-                        thisChecker.position.z = thisFiled.position.z;
-                        thisChecker.material.color = beforeCheckerColor; // ustawienie domyślnego koloru pionka
+                        
+                        var canMove = false; // ruch wyłącznie do przodu
+                        if(this.userColor == 'redChecker') canMove = (thisChecker.cords.x == currentField.cords.x - 1 || thisChecker.cords.x == currentField.cords.x + 1) &&
+                                                            (thisChecker.cords.y == currentField.cords.y - 1) && this.bYourTurn;
+                        else canMove = (thisChecker.cords.x == currentField.cords.x - 1 || thisChecker.cords.x == currentField.cords.x + 1) &&
+                                        (thisChecker.cords.y == currentField.cords.y + 1) && this.bYourTurn;
 
-                        net.updateCheckersArray({field: {x: 7 - thisFiled.cords.x, y: thisFiled.cords.y},
-                            checker: {x: 7 - thisChecker.cords.x, y: thisChecker.cords.y}});
 
-                        clickElement = 1; // zmiana kolejki na pionka
-                    } else $('.gameInfo').html('Możesz poruszać się tylko po ciemnych polach !');
+                        if (canMove) {
+                            $('.gameInfo').empty();
+                            console.log(currentField.position);
+                            thisFiled = currentField; // ustalenie pozycji pola
+                            thisChecker.position.x = thisFiled.position.x; // ustawienie pozycji pionka na klikane pole (X, niżej Z)
+                            thisChecker.position.z = thisFiled.position.z;
+                            thisChecker.material.color = beforeCheckerColor; // ustawienie domyślnego koloru pionka
+
+                            net.updateCheckersArray({
+                                field: { y: 7 - thisFiled.cords.x, x: thisFiled.cords.y }, //x: 7 - thisFiled.cords tak samo this.Checker
+                                checker: { y: 7 - thisChecker.cords.x, x: thisChecker.cords.y },
+                            }); // checker czyli pozycja wcześniejsza
+
+                            thisChecker.cords.x = thisFiled.cords.x; // aktualizacja cordow pionka
+                            thisChecker.cords.y = thisFiled.cords.y;
+
+                            clickElement = 1; // zmiana kolejki na pionka
+                        } else $('.gameInfo').html('Poruszaj się tylko po skosie tylko o jedno pole w przód!');
+                    } else $('.gameInfo').html('Możesz poruszać się tylko po ciemnych polach!');
                     // currentField.material.color = {r: 0, g: 0, b: 1};
                 }
             } else if (clickElement == 1) {
@@ -198,7 +215,8 @@ class Game {
                 if (intersects.length > 0) {
                     var currentChecker = intersects[0].object;
 
-                    if (this.userColor == currentChecker.name) { // sprawdzenie czy kolor pionka zgadza sie z kolorem wybranym przez gracza
+                    if (this.userColor == currentChecker.name) {
+                        // sprawdzenie czy kolor pionka zgadza sie z kolorem wybranym przez gracza
                         beforeCheckerColor = currentChecker.material.color; // zapisanie koloru tego pionka
                         thisChecker = currentChecker;
                         currentChecker.material.color = { r: 1, g: 0, b: 0.5 }; // podświetlenie pionka na różowo
@@ -208,5 +226,31 @@ class Game {
                 }
             }
         });
+    }
+
+    clickTest() {
+        $('#root').click(() => {
+            this.scene.children[2].children.forEach((checker, checkerID) => {
+                console.log(checker.cords);
+                if (checker.cords.x == 4 && checker.cords.y == 1) {
+                    this.scene.children[1].children.forEach(field => {
+                        if (field.cords.x == 5 && field.cords.y == 4) {
+                            console.log(checker.position.x);
+                            this.scene.children[2].children[checkerID].position.x = field.position.x;
+                            this.scene.children[2].children[checkerID].position.z = field.position.z;
+                        }
+                    });
+                }
+                return checker;
+            });
+        });
+    }
+
+    updateCheckerPosition(position) {
+        console.log(position);
+    }
+
+    set yourTurn(turn){
+        this.bYourTurn = turn;
     }
 }
