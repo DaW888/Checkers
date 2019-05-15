@@ -64,8 +64,22 @@ class Net {
             success: function(data) {
                 const obj = JSON.parse(data);
                 console.log(obj);
-                
-                game.updateCheckerPosition(obj);
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr, status, error);
+            },
+        });
+    }
+
+    getChanges(){
+        $.ajax({
+            url: '../server.js',
+            data: { action: 'getChanges'},
+            type: 'POST',
+            success: function(data) {
+                const obj = JSON.parse(data);
+                console.log(obj);
+                game.updateOponentCheckerPosition(obj);
             },
             error: function(xhr, status, error) {
                 console.log(xhr, status, error);

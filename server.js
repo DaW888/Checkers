@@ -3,8 +3,10 @@ const fs = require('fs');
 const qs = require('querystring');
 
 var usersTab = [];
+var returnSetting = null;
 
-chessboardTab = [
+
+var chessboardTab = [
     // light - 0, dark - 1;
     [0, 1, 0, 1, 0, 1, 0, 1],
     [1, 0, 1, 0, 1, 0, 1, 0],
@@ -17,7 +19,7 @@ chessboardTab = [
 ];
 
 // startowe rozmieszczenie pionkow
-checkersTab = [
+var checkersTab = [
     [0, 2, 0, 2, 0, 2, 0, 2], // 2 - czerwone
     [2, 0, 2, 0, 2, 0, 2, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -148,7 +150,24 @@ function servResponse(req, res) {
         case 'updateCheckersArray':
             var setting = JSON.parse(finish.setting);
             console.log(setting);
-            res.end(JSON.stringify(setting, null, 2));
+            var kill = false;
+            console.log(checkersTab[setting.from.x][setting.from.y]);
+            console.log(checkersTab[setting.target.x][setting.target.y]);
+
+            if(checkersTab[setting.target.x][setting.target.y] != 0)    kill = true;
+
+            checkersTab[setting.from.x][setting.from.y] = 0;
+            checkersTab[setting.target.x][setting.target.y] = setting.color == 'blueChecker' ? 1 : 2;
+            console.log('asd' + checkersTab[setting.target.x][setting.target.y] + setting.color);
+
+            returnSetting = {...setting, kill: kill};
+            // res.end(JSON.stringify({...setting, kill: kill}, null, 2));
+            break;
+
+        case 'getChanges':
+            console.log(returnSetting);
+            res.end(JSON.stringify(returnSetting, null, 2));
+            returnSetting = null;
             break;
         }
     });

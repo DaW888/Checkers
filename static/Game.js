@@ -175,8 +175,9 @@ class Game {
 
             // intersects / raycaster nie działa na kontenerach, by je obsłużyć trzeba wejść głębiej
             var intersects = null;
+            var gameInfo = '';
 
-            if (clickElement == 0) {
+            if (clickElement == 0 && this.bYourTurn) {
                 intersects = raycaster.intersectObjects(this.scene.children[1].children);
                 if (intersects.length > 0) {
                     var currentField = intersects[0].object;
@@ -184,9 +185,23 @@ class Game {
                         
                         var canMove = false; // ruch wyłącznie do przodu
                         if(this.userColor == 'redChecker') canMove = (thisChecker.cords.x == currentField.cords.x - 1 || thisChecker.cords.x == currentField.cords.x + 1) &&
-                                                            (thisChecker.cords.y == currentField.cords.y - 1) && this.bYourTurn;
+                                                            (thisChecker.cords.y == currentField.cords.y - 1);
                         else canMove = (thisChecker.cords.x == currentField.cords.x - 1 || thisChecker.cords.x == currentField.cords.x + 1) &&
-                                        (thisChecker.cords.y == currentField.cords.y + 1) && this.bYourTurn;
+                                        (thisChecker.cords.y == currentField.cords.y + 1);
+                        if(!canMove) gameInfo = 'Poruszaj się tylko po skosie tylko o jedno pole w przód!';
+
+                        var checkersArray = this.scene.children[2].children;
+                        console.log(checkersArray);
+
+                        if(canMove){
+                            checkersArray.forEach(ch => {
+                                console.log(ch.cords.x,ch.cords.y);
+                                if(ch.cords.x == currentField.cords.x && ch.cords.y == currentField.cords.y && ch.name == this.userColor){
+                                    gameInfo = 'Stoisz innym pionkiem na tym polu!';
+                                    canMove = false;
+                                }
+                            });
+                        }
 
 
                         if (canMove) {
@@ -195,19 +210,29 @@ class Game {
                             thisFiled = currentField; // ustalenie pozycji pola
                             thisChecker.position.x = thisFiled.position.x; // ustawienie pozycji pionka na klikane pole (X, niżej Z)
                             thisChecker.position.z = thisFiled.position.z;
-                            thisChecker.material.color = beforeCheckerColor; // ustawienie domyślnego koloru pionka
+                            // thisChecker.material.color = beforeCheckerColor; // ustawienie domyślnego koloru pionka
 
                             net.updateCheckersArray({
-                                field: { y: 7 - thisFiled.cords.x, x: thisFiled.cords.y }, //x: 7 - thisFiled.cords tak samo this.Checker
-                                checker: { y: 7 - thisChecker.cords.x, x: thisChecker.cords.y },
+                                target: { y: thisFiled.cords.x, x: thisFiled.cords.y }, //x: 7 - thisFiled.cords tak samo this.Checker
+                                from: { y: thisChecker.cords.x, x: thisChecker.cords.y },
+                                color: thisChecker.name
                             }); // checker czyli pozycja wcześniejsza
 
                             thisChecker.cords.x = thisFiled.cords.x; // aktualizacja cordow pionka
                             thisChecker.cords.y = thisFiled.cords.y;
 
-                            clickElement = 1; // zmiana kolejki na pionka
-                        } else $('.gameInfo').html('Poruszaj się tylko po skosie tylko o jedno pole w przód!');
-                    } else $('.gameInfo').html('Możesz poruszać się tylko po ciemnych polach!');
+                            ui.nextPlayer();
+
+                            // clickElement = 1; // zmiana kolejki na pionka
+                        } else{
+                            $('.gameInfo').html(gameInfo);
+                        } 
+                    } else {
+                        $('.gameInfo').html('Możesz poruszać się tylko po ciemnych polach!');
+                    }
+                    clickElement = 1; // zmiana kolejki na pionka
+                    thisChecker.material.color = beforeCheckerColor; // ustawienie domyślnego koloru pionka
+
                     // currentField.material.color = {r: 0, g: 0, b: 1};
                 }
             } else if (clickElement == 1) {
@@ -246,8 +271,29 @@ class Game {
         });
     }
 
-    updateCheckerPosition(position) {
-        console.log(position);
+    updateOponentCheckerPosition(settings) { //from, target, color, kill
+        if(settings != null){
+            ui.nextPlayer();
+            console.log(settings);
+            this.scene.children[2].children.forEach((checker, checkerID) => {
+                console.log(checker.cords);
+                if (checker.cords.x == settings.from.y && checker.cords.y == settings.from.x) {
+                    this.scene.children[1].children.forEach(field => {
+                        if (field.cords.x == settings.target.y && field.cords.y == settings.target.x) {
+                            console.error('DZIALA');
+                            console.log(checker.position.x);
+                            this.scene.children[2].children[checkerID].position.x = field.position.x;
+                            this.scene.children[2].children[checkerID].position.z = field.position.z;
+
+                            this.scene.children[2].children[checkerID].cords.x = field.cords.x; // aktualizacja cordow pionka
+                            this.scene.children[2].children[checkerID].cords.y = field.cords.y;
+                        }
+                    });
+                }
+                return checker;
+            });
+
+        }
     }
 
     set yourTurn(turn){

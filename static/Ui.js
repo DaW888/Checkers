@@ -7,6 +7,7 @@ class Ui {
         this.welcomeScreen();
         this.myNick = null;
         this.waiting = false; // czekanie na kolej drugiego usera 20s
+        this.bNextPlayer = false;
     }
 
     welcomeScreen() {
@@ -81,10 +82,10 @@ class Ui {
             if (ktoryUser == 1) {
                 game.changeSide();
                 $('.status').css({ backgroundColor: 'rgba(214, 34, 34, 0.324)' });
-                // this.waiting = true; //! tutaj TRUE
-                this.waitForOponentMove(5);
+                // this.waiting = true; //? tutaj TRUE
+                this.waitForOponentMove(10);
             } else {
-                this.timeInfo(5);
+                this.timeInfo(10);
             }
             
         }
@@ -92,15 +93,19 @@ class Ui {
 
     waitForOponentMove(timer = 20){
         // if(this.waiting){
-        game.yourTurn = false;
+        game.yourTurn = false; //!odkomentowac na koniec
         var waitingOverlay = $('<div>', {html: 'Czekamy'}).addClass('waitingOverlay').appendTo($('.status'));
         waitingOverlay.css({ display: 'block' });
         var inter = setInterval(() => {
+            net.getChanges();
+
             console.log('chodzi>');
             waitingOverlay.html(timer);
             console.log(waitingOverlay.html());
 
-            if(timer <= 0){
+            if(timer <= 0 || this.bNextPlayer){
+                net.getChanges();
+                this.bNextPlayer = false;
                 clearInterval(inter);
                 timer = 20;
                 // this.waiting = false;
@@ -114,17 +119,25 @@ class Ui {
         // }
     }
     timeInfo(timer = 20){
-        game.yourTurn = true;
-        var waitDiv = $('<div>', {html: 'CZAS START'}).addClass('waitDiv').appendTo($('.status'));
+        game.yourTurn = true; //!odkomentowac na koniec
+        var waitDiv = $('<div>', {html: 'TWÓJ RUCH'}).addClass('waitDiv').appendTo($('.status'));
         var inter = setInterval(() => {
             waitDiv.html(timer);
 
-            if(timer <= 0){
+            if(timer <= 0 || this.bNextPlayer){
                 clearInterval(inter);
                 waitDiv.remove();
-                this.waitForOponentMove(10);
+                // if(this.bNextPlayer) this.waitForOponentMove(11);
+                // else this.waitForOponentMove(10); 
+                this.bNextPlayer = false;
+                this.waitForOponentMove(10); //!odkomentowac na koniec
+
             }
             timer --;
         }, 1000);
+    }
+
+    nextPlayer(){
+        this.bNextPlayer = true;
     }
 }
