@@ -161,7 +161,7 @@ function servResponse(req, res) {
             console.log('asd' + checkersTab[setting.target.x][setting.target.y] + setting.color);
 
             returnSetting = {...setting, kill: kill};
-            // res.end(JSON.stringify({...setting, kill: kill}, null, 2));
+            res.end(JSON.stringify({...setting, kill: kill}, null, 2));
             break;
 
         case 'getChanges':

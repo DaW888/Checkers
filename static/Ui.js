@@ -87,7 +87,7 @@ class Ui {
             } else {
                 this.timeInfo(10);
             }
-            
+
         }
     }
 
@@ -107,7 +107,7 @@ class Ui {
                 net.getChanges();
                 this.bNextPlayer = false;
                 clearInterval(inter);
-                timer = 20;
+                // timer = 20;
                 // this.waiting = false;
                 waitingOverlay.remove();
                 this.timeInfo(10);
@@ -127,10 +127,10 @@ class Ui {
             if(timer <= 0 || this.bNextPlayer){
                 clearInterval(inter);
                 waitDiv.remove();
-                // if(this.bNextPlayer) this.waitForOponentMove(11);
-                // else this.waitForOponentMove(10); 
+                if(this.bNextPlayer) this.waitForOponentMove(11);
+                else this.waitForOponentMove(10);
                 this.bNextPlayer = false;
-                this.waitForOponentMove(10); //!odkomentowac na koniec
+                // this.waitForOponentMove(11); //!odkomentowac na koniec
 
             }
             timer --;
